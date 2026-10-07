@@ -3,19 +3,40 @@
 {% block title %}Booking History{% endblock %}
 
 {% block content %}
-<h2>Booking History</h2>
+<div class="text-center mb-4">
+    <h1>Booking History</h1>
+    <p class="text-muted">View your previous movie bookings.</p>
+</div>
 
-<ul class="list-group">
-    {% for booking in bookings %}
-        <li class="list-group-item">
-            <strong>Movie:</strong> {{ booking.movie.title }}<br>
-            <strong>Seat:</strong> {{ booking.seat.seat_number }}<br>
-            <strong>Booking Date:</strong> {{ booking.booking_date }}
-        </li>
-    {% empty %}
-        <li class="list-group-item">
-            No bookings found.
-        </li>
-    {% endfor %}
-</ul>
+<div class="card shadow-sm">
+    <div class="card-body">
+        {% if bookings %}
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Movie</th>
+                            <th>Seat</th>
+                            <th>Booking Date</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for booking in bookings %}
+                            <tr>
+                                <td>{{ booking.movie.title }}</td>
+                                <td>{{ booking.seat.seat_number }}</td>
+                                <td>{{ booking.booking_date }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info text-center">
+                You do not have any bookings yet.
+            </div>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}

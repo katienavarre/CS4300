@@ -1,26 +1,47 @@
 {% extends 'bookings/base.html' %}
 
-{% block title %}Movie List{% endblock %}
+{% block title %}Movies{% endblock %}
 
 {% block content %}
-<h2>Available Movies</h2>
+<div class="text-center mb-4">
+    <h1>Now Showing</h1>
+    <p class="text-muted">Choose a movie to book your seat.</p>
+</div>
 
-<ul class="list-group">
+<div class="row">
     {% for movie in movies %}
-        <li class="list-group-item">
-            <h5>{{ movie.title }}</h5>
-            <p>{{ movie.description }}</p>
-            <p><strong>Release Date:</strong> {{ movie.release_date }}</p>
-            <p><strong>Duration:</strong> {{ movie.duration }} minutes</p>
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ movie.title }}</h5>
 
-            <a href="{% url 'book_seat' movie.id %}" class="btn btn-primary">
-                Book Now
-            </a>
-        </li>
+                    <p class="card-text">
+                        {{ movie.description }}
+                    </p>
+
+                    <p class="mb-1">
+                        <strong>Release Date:</strong>
+                        {{ movie.release_date }}
+                    </p>
+
+                    <p>
+                        <strong>Duration:</strong>
+                        {{ movie.duration }} minutes
+                    </p>
+
+                    <a href="{% url 'book_seat' movie.id %}"
+                       class="btn btn-primary">
+                        Book a Seat
+                    </a>
+                </div>
+            </div>
+        </div>
     {% empty %}
-        <li class="list-group-item">
-            No movies are currently available.
-        </li>
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                No movies are currently available.
+            </div>
+        </div>
     {% endfor %}
-</ul>
+</div>
 {% endblock %}

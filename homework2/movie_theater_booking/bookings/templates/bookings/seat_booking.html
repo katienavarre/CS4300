@@ -3,29 +3,44 @@
 {% block title %}Book a Seat{% endblock %}
 
 {% block content %}
-<h2>Book a Seat</h2>
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="card-title">Book a Seat</h2>
 
-<h4>{{ movie.title }}</h4>
-<p>{{ movie.description }}</p>
+                <h4 class="mt-4">{{ movie.title }}</h4>
+                <p class="text-muted">{{ movie.description }}</p>
 
-<form method="post">
-    {% csrf_token %}
+                <form method="post">
+                    {% csrf_token %}
 
-    <div class="mb-3">
-        <label for="seat" class="form-label">Choose a Seat</label>
-        <select name="seat" id="seat" class="form-select">
-            {% for seat in seats %}
-                {% if not seat.booking_status %}
-                    <option value="{{ seat.id }}">
-                        {{ seat.seat_number }}
-                    </option>
-                {% endif %}
-            {% endfor %}
-        </select>
+                    <div class="mb-3">
+                        <label for="seat" class="form-label">
+                            Choose an Available Seat
+                        </label>
+
+                        <select name="seat" id="seat" class="form-select">
+                            {% for seat in seats %}
+                                {% if not seat.booking_status %}
+                                    <option value="{{ seat.id }}">
+                                        {{ seat.seat_number }}
+                                    </option>
+                                {% endif %}
+                            {% empty %}
+                                <option disabled>
+                                    No seats available
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        Book Seat
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
-
-    <button type="submit" class="btn btn-primary">
-        Book Seat
-    </button>
-</form>
+</div>
 {% endblock %}

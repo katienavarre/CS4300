@@ -10,8 +10,8 @@
             rel="stylesheet"
         >
     </head>
-    
-    <body>
+
+    <body class="bg-light">
 
         <nav class="navbar navbar-dark bg-dark mb-4">
             <div class="container">
@@ -19,10 +19,14 @@
             </div>
         </nav>
 
-        <main class="container">
+        <main class="container pb-5">
             {% block content %}
             {% endblock %}
         </main>
+
+        <footer class="bg-dark text-white text-center py-3">
+            <p class="mb-0">Movie Theater Booking System</p>
+        </footer>
 
     </body>
 </html>
