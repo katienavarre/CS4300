@@ -1,5 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
+from django.urls import reverse
+from django.contrib.messages import get_messages
 from .models import Movie, Seat, Booking
 from datetime import date
 from rest_framework.test import APITestCase
@@ -179,3 +181,93 @@ class BookingAPITest(APITestCase):
         )
 
         self.assertEqual(Booking.objects.count(), 0)
+
+
+class WebsiteViewTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="websiteuser",
+            password="testpassword"
+        )
+
+        self.movie = Movie.objects.create(
+            title="Website Test Movie",
+            description="A movie for website testing",
+            release_date=date(2025, 1, 1),
+            duration=120
+        )
+
+        self.available_seat = Seat.objects.create(
+            seat_number="C1",
+            booking_status=False
+        )
+
+        self.booked_seat = Seat.objects.create(
+            seat_number="C2",
+            booking_status=True
+        )
+
+    def test_movie_list_page(self):
+        response = self.client.get(reverse('movie_list'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Website Test Movie")
+
+    def test_seat_booking_page(self):
+        response = self.client.get(
+            reverse('book_seat', args=[self.movie.id])
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Website Test Movie")
+        self.assertContains(response, "C1")
+        self.assertNotContains(response, "C2")
+
+    def test_booking_history_page(self):
+        response = self.client.get(reverse('booking_history'))
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_booking_with_available_seat(self):
+        response = self.client.post(
+            reverse('book_seat', args=[self.movie.id]),
+            {'seat': self.available_seat.id}
+        )
+
+        self.assertRedirects(
+            response,
+            reverse('booking_history')
+        )
+
+        self.available_seat.refresh_from_db()
+        self.assertTrue(self.available_seat.booking_status)
+
+        self.assertTrue(
+            Booking.objects.filter(
+                movie=self.movie,
+                seat=self.available_seat,
+                user=self.user
+            ).exists()
+        )
+
+    def test_booking_rejected_for_booked_seat(self):
+        response = self.client.post(
+            reverse('book_seat', args=[self.movie.id]),
+            {'seat': self.booked_seat.id}
+        )
+
+        self.assertRedirects(
+            response,
+            reverse('book_seat', args=[self.movie.id])
+        )
+
+        self.assertFalse(
+            Booking.objects.filter(seat=self.booked_seat).exists()
+        )
+
+    def test_booking_page_with_invalid_movie(self):
+        response = self.client.get(
+            reverse('book_seat', args=[99999])
+        )
+
+        self.assertEqual(response.status_code, 404)

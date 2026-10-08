@@ -25,7 +25,10 @@ SECRET_KEY = 'django-insecure-03++knh$0o_9=t$@qnxp2d!3q@1fgk%8+e&pskl(!0)fh_t9xa
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://app-mightymaple4443-28.lab.devedu.io",
@@ -48,6 +51,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -123,6 +127,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
