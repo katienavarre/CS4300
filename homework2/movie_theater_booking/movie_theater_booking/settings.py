@@ -27,6 +27,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://app-mightymaple4443-28.lab.devedu.io",
+]
+
 
 # Application definition
 

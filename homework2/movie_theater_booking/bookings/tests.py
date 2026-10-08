@@ -114,8 +114,68 @@ class SeatAPITest(APITestCase):
 
 class BookingAPITest(APITestCase):
 
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="bookingtest",
+            password="testpassword"
+        )
+
+        self.movie = Movie.objects.create(
+            title="Booking Test Movie",
+            description="A movie for booking tests",
+            release_date=date(2025, 1, 1),
+            duration=120
+        )
+
+        self.seat = Seat.objects.create(
+            seat_number="B1",
+            booking_status=False
+        )
+
+        self.url = reverse('booking-list')
+
     def test_booking_list_endpoint(self):
-        url = reverse('booking-list')
-        response = self.client.get(url)
+        response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_booking_creation_marks_seat_as_booked(self):
+        data = {
+            "movie": self.movie.id,
+            "seat": self.seat.id,
+            "user": self.user.id
+        }
+
+        response = self.client.post(self.url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        self.seat.refresh_from_db()
+        self.assertTrue(self.seat.booking_status)
+
+        self.assertTrue(
+            Booking.objects.filter(
+                movie=self.movie,
+                seat=self.seat,
+                user=self.user
+            ).exists()
+        )
+
+    def test_booking_rejected_for_already_booked_seat(self):
+        self.seat.booking_status = True
+        self.seat.save()
+
+        data = {
+            "movie": self.movie.id,
+            "seat": self.seat.id,
+            "user": self.user.id
+        }
+
+        response = self.client.post(self.url, data, format='json')
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST
+        )
+
+        self.assertEqual(Booking.objects.count(), 0)
