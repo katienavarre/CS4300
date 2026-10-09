@@ -1,0 +1,28 @@
+[
+{
+  "model": "bookings.movie",
+  "pk": 1,
+  "fields": {
+    "title": "Test Movie",
+    "description": "A sample movie for testing seat bookings.",
+    "release_date": "2025-01-01",
+    "duration": 120
+  }
+},
+{
+  "model": "bookings.seat",
+  "pk": 1,
+  "fields": {
+    "seat_number": "A1",
+    "booking_status": true
+  }
+},
+{
+  "model": "bookings.seat",
+  "pk": 2,
+  "fields": {
+    "seat_number": "A2",
+    "booking_status": false
+  }
+}
+]
