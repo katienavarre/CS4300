@@ -29,7 +29,9 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
+    "testserver",
     "movie-theater-booking-ghv3.onrender.com",
+    "app-mightymaple4443-28.lab.devedu.io",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
